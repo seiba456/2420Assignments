@@ -4,7 +4,7 @@ package assign02;
  * This class represents a UHealth patient who has a unique UHealthID
  * and a first and last name.
  *
- * @author Eric Heisler and ??
+ * @author Eric Heisler and Arath Alatorre Muniz && Mattes Clarke
  * @version May 5, 2023
  */
 public class Patient {
@@ -64,8 +64,14 @@ public class Patient {
 	 * 			to this patient, false otherwise.
 	 */
 	public boolean equals(Object other) {
-		// FILL IN -- do not return false unless appropriate
-		return false;
+		
+		if(!(other instanceof Patient))
+			return false;
+		
+		Patient otherPatient = (Patient) other;
+		
+		return(this.uHealthID.equals(otherPatient.uHealthID));
+		
 	}
 
 	/**
