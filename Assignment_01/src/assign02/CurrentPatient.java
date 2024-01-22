@@ -1,5 +1,7 @@
 package assign02;
 
+import java.util.GregorianCalendar;
+
 public class CurrentPatient extends Patient {
 	
 	private String firstName, lastName;

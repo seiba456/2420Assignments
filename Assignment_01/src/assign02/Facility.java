@@ -11,7 +11,7 @@ import java.util.Scanner;
  * This class represents a record of patients that have visited a UHealth
  * facility.
  *
- * @author Eric Heisler and ??
+ * @author Eric Heisler and Arath Alatorre Muniz && Mattes Clarke
  * @version May 5, 2023
  */
 public class Facility {
@@ -33,7 +33,16 @@ public class Facility {
 	 *         false if the patient was not added because they already exist in the record
 	 */
 	public boolean addPatient(CurrentPatient patient) {
-		// FILL IN -- do not return false unless appropriate
+		
+		if(this.patientList.isEmpty()) {
+			patientList.add(patient);
+			return true;
+		}
+		
+		// || will change if the contaings does not uuse .equals of patient||
+		if(patientList.contains(patient))
+			return false;
+			
 		return false;
 	}
 
@@ -45,8 +54,18 @@ public class Facility {
 	 * 			exists in the record
 	 */
 	public CurrentPatient lookupByUHID(UHealthID patientID) {
-		// FILL IN -- do not return null, unless appropriate
+		
+		//checks if patient list is empty
+		if(this.patientList.isEmpty())
+			return null;
+		
+		for(int i = 0; i < patientList.size(); i++) {
+			if(patientList.get(i).getUHealthID().equals(patientID))
+				return patientList.get(i);
+		}
+		
 		return null;
+		
 	}
 
 	/**
@@ -57,8 +76,22 @@ public class Facility {
 	 * 	     or an empty list if no such patients exist in the record
 	 */
 	public ArrayList<CurrentPatient> lookupByPhysician(int physician) {
+		
+		ArrayList<CurrentPatient> patientsAssigned = new ArrayList<CurrentPatient>();
+		
+		if(!this.patientList.isEmpty()) {
+			
+			for(int i = 0; i < patientList.size(); i++) {
+				
+				if(patientList.get(i).getPhysician() == physician) {
+					patientsAssigned.add(patientList.get(i));
+				}
+			}
+		}
+		
+		
 		// FILL IN -- do not return null
-		return null;
+		return patientsAssigned;
 	}
 
 	/**
@@ -71,8 +104,19 @@ public class Facility {
 	 * 	     or an empty list if no such patients exist in the record
 	 */
 	public ArrayList<CurrentPatient> getInactivePatients(GregorianCalendar date) {
-		// FILL IN -- do not return null
-		return null;
+
+		ArrayList<CurrentPatient> olderPatients = new ArrayList<CurrentPatient>();
+		
+		if(!patientList.isEmpty()) {
+				for(int i = 0; i < patientList.size(); i++) {
+				
+				if(date.before(patientList.get(i).getLastVisit())){
+					olderPatients.add(patientList.get(i));
+				}
+			}
+			
+		}
+		return olderPatients;
 	}
 
 	/**
@@ -85,8 +129,20 @@ public class Facility {
 	 * 	     or an empty list if no patients exist in the record
 	 */
 	public ArrayList<Integer> getPhysicianList() {
-		// FILL IN -- do not return null
-		return null;
+		
+		ArrayList<Integer> physicians = new ArrayList<Integer>();
+		
+		if(!patientList.isEmpty()) {
+			
+			for(int i = 0; i < patientList.size(); i++) {
+				
+				int currentPhysician = patientList.get(i).getPhysician();
+				if(!physicians.contains(currentPhysician))
+					physicians.add(currentPhysician);
+			}
+		}
+			
+		return physicians;
 	}
 
 	/**
@@ -99,7 +155,21 @@ public class Facility {
 	 * @param physician - identifier of patient's new physician
 	 */
 	public void setPhysician(UHealthID patientID, int physician) {
-		// FILL IN
+		
+		
+		boolean patientFound = true;
+		int indexOfPatient = 0;
+		for(int i = 0; i < patientList.size(); i++) {
+			
+			if(patientList.get(i).getUHealthID().equals(patientID)) {
+				patientFound = true;
+				indexOfPatient = i;
+				break;
+			}
+		}
+		
+		if(patientFound)
+			patientList.get(indexOfPatient).updatePhysician(physician);
 	}
 
 	/**
@@ -112,7 +182,24 @@ public class Facility {
 	 * @param date - new date of last visit
 	 */
 	public void setLastVisit(UHealthID patientID, GregorianCalendar date) {
-		// FILL IN
+		
+		boolean patientFound = true;
+		int indexOfPatient = 0;
+		for(int i = 0; i < patientList.size(); i++) {
+			
+			if(patientList.get(i).getUHealthID().equals(patientID)) {
+				patientFound = true;
+				indexOfPatient = i;
+				break;
+			}
+		}
+		
+		
+
+		if(patientFound)
+			patientList.get(indexOfPatient).updateLastVisit(date);
+		
+	
 	}
 
 	// The methods below should not be changed -----------------------------------
