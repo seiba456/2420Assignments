@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.Scanner;
 
@@ -200,5 +201,149 @@ public class FacilityGeneric<Type> {
 			patientList.get(indexOfPatient).updateLastVisit(date);
 		
 	
+	}
+	
+	
+	
+	
+	
+    /**
+	 * Returns the list of current patients in this facility, 
+	 * sorted by uHealthID in lexicographical order.
+	 */
+	public ArrayList<CurrentPatientGeneric<Type>> getOrderedByUHealthID() {
+	    ArrayList<CurrentPatientGeneric<Type>> patientListCopy = new ArrayList<CurrentPatientGeneric<Type>>();
+		for (CurrentPatientGeneric<Type> patient : patientList) {
+			patientListCopy.add(patient);
+		}
+	    sort(patientListCopy, new OrderByUHealthID());
+
+	    return patientListCopy;
+	}
+
+
+	/**
+	 * Returns the list of current patients in this facility with a date of last visit
+	 * later than a cutoff date, sorted by name (last name, breaking ties with first name)
+	 * Breaks ties in names using uHealthIDs (lexicographical order).
+         * Note: see the OrderByName class started for you below!
+	 * 
+	 * @param cutoffDate - value that a patient's last visit must be later than to be 
+	 * 						included in the returned list
+	 */
+	public ArrayList<CurrentPatientGeneric<Type>> getRecentPatients(GregorianCalendar cutoffDate) {
+
+
+		ArrayList<CurrentPatientGeneric<Type>> recentPatients = new ArrayList<CurrentPatientGeneric<Type>>();
+		for(int i = 0; i < patientList.size(); i++){
+			
+			
+			recentPatients.add(patientList.get(i));
+		}
+		
+		sort(recentPatients, OrderByDate);
+		ArrayList<CurrentPatientGeneric<Type>> trimmed = new ArrayList<CurrentPatientGeneric<Type>>();
+		for(int i = 0; i < recentPatients.size(); i++) {
+			
+			if(recentPatients.get(i).getLastVisit().equals(cutoffDate)) {
+				for(int j = i; j < recentPatients.size(); j++) {
+					trimmed.add(recentPatients.get(j));
+					return trimmed;
+					
+				}
+			}
+		}
+	    return recentPatients;
+	}
+
+	/**
+	 * Performs a SELECTION SORT on the input ArrayList. 
+	 * 
+	 * 1. Finds the smallest item in the list. 
+	 * 2. Swaps the smallest item with the first item in the list. 
+	 * 3. Reconsiders the list to be the remaining unsorted portion (second item to Nth item) and 
+	 *    repeats steps 1, 2, and 3.
+	 */
+	private static <ListType> void sort(ArrayList<ListType> list, Comparator<ListType> c) {
+		for (int i = 0; i < list.size() - 1; i++) {
+			int j, minIndex;
+			for (j = i + 1, minIndex = i; j < list.size(); j++) {
+				if (c.compare(list.get(j), list.get(minIndex)) < 0) {
+					minIndex = j;
+				}
+			}
+			ListType temp = list.get(i);
+			list.set(i, list.get(minIndex));
+			list.set(minIndex, temp);
+		}
+	}
+
+	/**
+	 * Comparator that defines an ordering among current patients using their uHealthIDs.
+	 * uHealthIDs are guaranteed to be unique, making a tie-breaker unnecessary.
+	 */
+	protected class OrderByUHealthID implements Comparator<CurrentPatientGeneric<Type>> {
+
+		/**
+		 * Returns a negative value if lhs (left-hand side) is less than rhs (right-hand side). 
+		 * Returns a positive value if lhs is greater than rhs.
+		 * Returns 0 if lhs and rhs are equal.
+		 */
+		public int compare(CurrentPatientGeneric<Type> lhs, CurrentPatientGeneric<Type> rhs) {
+			return lhs.getUHealthID().toString().compareTo(rhs.getUHealthID().toString());
+		}
+	}
+
+	/**
+	 * Comparator that defines an ordering among current patients using their names.
+	 * Compares by last name, then first name (if last names are the same), then uHealthID 
+	 * (if both names are the same).  uHealthIDs are guaranteed to be unique.
+	 */
+	protected class OrderByName implements Comparator<CurrentPatientGeneric<Type>> {
+
+		@Override
+		public int compare(CurrentPatientGeneric<Type> o1, CurrentPatientGeneric<Type> o2) {
+			
+			
+			
+			//if the last names are not the same
+			if(!o1.getLastName().equals(o2.getLastName())) {
+				
+				return o1.getLastName().compareTo(o2.getLastName());
+				
+			}
+			
+			
+			
+			//if the last names are the same. 
+			if(o1.getLastName().equals(o2.getLastName()) && !o1.getFirstName().equals(o2.getFirstName())) {
+				
+				return o1.getFirstName().compareTo(o2.getFirstName());
+				
+			}
+			
+			if(o1.getLastName().equals(o2.getLastName()) && o1.getFirstName().equals(o2.getFirstName())) {
+				
+				return o1.getUHealthID().toString().compareTo(o2.getUHealthID().toString());
+			}
+			return 0;
+		}
+	}
+	
+	
+	/**
+	 * Comparator that sorts based on a cutoff date by a specfic date.
+	 */
+	protected class OrderByDate implements Comparator<CurrentPatientGeneric<Type>>{
+
+		@Override
+		public int compare(CurrentPatientGeneric<Type> o1, CurrentPatientGeneric<Type> o2) {
+			// TODO Auto-generated method stub
+			
+			
+			return o1.getLastVisit().compareTo(o2.getLastVisit());
+		}
+		
+		
 	}
 }
