@@ -17,13 +17,13 @@ import java.util.Scanner;
  */
 public class FacilityGeneric<Type> {
 
-	private ArrayList<CurrentPatientGeneric> patientList;
+	private ArrayList<CurrentPatientGeneric<Type>> patientList;
 
 	/**
 	 * Creates an empty facility record.
 	 */
 	public FacilityGeneric() {
-		this.patientList= new ArrayList<CurrentPatientGeneric>();
+		this.patientList= new ArrayList<CurrentPatientGeneric<Type>>();
 	}
 
 	/**
@@ -33,7 +33,7 @@ public class FacilityGeneric<Type> {
 	 * @return true if the patient was added,
 	 *         false if the patient was not added because they already exist in the record
 	 */
-	public boolean addPatient(CurrentPatientGeneric patient) {
+	public boolean addPatient(CurrentPatientGeneric<Type> patient) {
 		
 		if(this.patientList.isEmpty()) {
 			patientList.add(patient);
@@ -54,7 +54,7 @@ public class FacilityGeneric<Type> {
 	 * @return the patient with the given ID, or null if no such patient
 	 * 			exists in the record
 	 */
-	public CurrentPatientGeneric lookupByUHID(UHealthID patientID) {
+	public CurrentPatientGeneric<Type> lookupByUHID(UHealthID patientID) {
 		
 		//checks if patient list is empty
 		if(this.patientList.isEmpty())
@@ -76,9 +76,9 @@ public class FacilityGeneric<Type> {
 	 * @return a list of patient(s) with the given physician (in any order),
 	 * 	     or an empty list if no such patients exist in the record
 	 */
-	public ArrayList<CurrentPatientGeneric> lookupByPhysician(Type physician) {
+	public ArrayList<CurrentPatientGeneric<Type>> lookupByPhysician(Type physician) {
 		
-		ArrayList<CurrentPatientGeneric> patientsAssigned = new ArrayList<CurrentPatientGeneric>();
+		ArrayList<CurrentPatientGeneric<Type>> patientsAssigned = new ArrayList<CurrentPatientGeneric<Type>>();
 		
 		if(!this.patientList.isEmpty()) {
 			
@@ -104,9 +104,9 @@ public class FacilityGeneric<Type> {
 	 * @return a list of patient(s) with last visit date before cutoff (in any order),
 	 * 	     or an empty list if no such patients exist in the record
 	 */
-	public ArrayList<CurrentPatientGeneric> getInactivePatients(GregorianCalendar date) {
+	public ArrayList<CurrentPatientGeneric<Type>> getInactivePatients(GregorianCalendar date) {
 
-		ArrayList<CurrentPatientGeneric> olderPatients = new ArrayList<CurrentPatientGeneric>();
+		ArrayList<CurrentPatientGeneric<Type>> olderPatients = new ArrayList<CurrentPatientGeneric<Type>>();
 		
 		if(!patientList.isEmpty()) {
 				for(int i = 0; i < patientList.size(); i++) {
@@ -155,7 +155,7 @@ public class FacilityGeneric<Type> {
 	 * @param patientID - UHealthID of patient to modify
 	 * @param physician - identifier of patient's new physician
 	 */
-	public void setPhysician(UHealthID patientID, int physician) {
+	public void setPhysician(UHealthID patientID, Type physician) {
 		
 		
 		boolean patientFound = true;
