@@ -49,6 +49,7 @@ public class FacilityGeneric<Type> {
 
 	/**
 	 * Retrieves the patient with the given UHealthID.
+	 * testing
 	 *
 	 * @param UHealthID of patient to be retrieved
 	 * @return the patient with the given ID, or null if no such patient
@@ -157,7 +158,6 @@ public class FacilityGeneric<Type> {
 	 */
 	public void setPhysician(UHealthID patientID, Type physician) {
 		
-		
 		boolean patientFound = true;
 		int indexOfPatient = 0;
 		for(int i = 0; i < patientList.size(); i++) {
@@ -194,17 +194,11 @@ public class FacilityGeneric<Type> {
 				break;
 			}
 		}
-		
-		
 
 		if(patientFound)
-			patientList.get(indexOfPatient).updateLastVisit(date);
-		
+			patientList.get(indexOfPatient).updateLastVisit(date);	
 	
 	}
-	
-	
-	
 	
 	
     /**
@@ -233,24 +227,30 @@ public class FacilityGeneric<Type> {
 	 */
 	public ArrayList<CurrentPatientGeneric<Type>> getRecentPatients(GregorianCalendar cutoffDate) {
 
-
+		//copies the original patient list to a temp list for the method
 		ArrayList<CurrentPatientGeneric<Type>> recentPatients = new ArrayList<CurrentPatientGeneric<Type>>();
 		for(int i = 0; i < patientList.size(); i++){
-			
 			
 			recentPatients.add(patientList.get(i));
 		}
 		
-		sort(recentPatients, OrderByDate);
+		sort(recentPatients, new OrderByDate());
 		ArrayList<CurrentPatientGeneric<Type>> trimmed = new ArrayList<CurrentPatientGeneric<Type>>();
+		
+		/*
+		 * Scans through sorted list until the cutoff date is found. Then makes a new list and sorts
+		 * the trimmed list based on last name, first name, and finally UHealthID.
+		 */
 		for(int i = 0; i < recentPatients.size(); i++) {
 			
 			if(recentPatients.get(i).getLastVisit().equals(cutoffDate)) {
 				for(int j = i; j < recentPatients.size(); j++) {
 					trimmed.add(recentPatients.get(j));
-					return trimmed;
+					
 					
 				}
+				sort(trimmed, new OrderByName());
+				return trimmed;
 			}
 		}
 	    return recentPatients;
@@ -338,8 +338,6 @@ public class FacilityGeneric<Type> {
 
 		@Override
 		public int compare(CurrentPatientGeneric<Type> o1, CurrentPatientGeneric<Type> o2) {
-			// TODO Auto-generated method stub
-			
 			
 			return o1.getLastVisit().compareTo(o2.getLastVisit());
 		}
