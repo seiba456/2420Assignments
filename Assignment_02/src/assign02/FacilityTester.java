@@ -71,7 +71,7 @@ public class FacilityTester {
 			for (int j = 0; j < 4; j++) {
 				uHID = uHID + (char)r.nextInt(26);
 			}
-			uHID = uHID + "-";
+			
 			for (int j = 0; j < 4; j++) {
 				uHID = uHID + r.nextInt(9);
 			}
