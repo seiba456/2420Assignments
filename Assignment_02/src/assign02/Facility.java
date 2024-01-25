@@ -110,7 +110,7 @@ public class Facility {
 		if(patientList.isEmpty() == false) {
 				for(int i = 0; i < patientList.size(); i++) {
 				
-				if(date.compareTo(patientList.get(i).getLastVisit()) > 0){
+				if(date.compareTo(patientList.get(i).getLastVisit()) > 0 || date.compareTo(patientList.get(i).getLastVisit()) == 0){
 					olderPatients.add(patientList.get(i));
 				}
 			}

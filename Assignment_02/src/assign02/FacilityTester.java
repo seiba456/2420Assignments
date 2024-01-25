@@ -43,7 +43,7 @@ public class FacilityTester {
 		verySmallFacility.addPatient(new CurrentPatient("Riley", "Nguyen", uHID3, 9879876, date3));
 
 		smallFacility = new Facility();
-		smallFacility.addAll("src/assignment02/small_patient_list.txt");
+		smallFacility.addAll("small_patient_list.txt");
 		
 		largeFacility = new Facility();
 		
