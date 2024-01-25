@@ -107,10 +107,10 @@ public class Facility {
 
 		ArrayList<CurrentPatient> olderPatients = new ArrayList<CurrentPatient>();
 		
-		if(!patientList.isEmpty()) {
+		if(patientList.isEmpty() == false) {
 				for(int i = 0; i < patientList.size(); i++) {
 				
-				if(date.before(patientList.get(i).getLastVisit())){
+				if(date.compareTo(patientList.get(i).getLastVisit()) > 0){
 					olderPatients.add(patientList.get(i));
 				}
 			}

@@ -6,9 +6,11 @@ import java.util.TreeMap;
 public class PatientIndex {
 
 	private TreeMap<UHealthID, String> member;
+	private PatientIndex index;
 	
 	public PatientIndex() {
-		PatientIndex test = new PatientIndex((o1, o2) -> o1.UHealthID.compareTo(o2.UHealthID));
+		//PatientIndex test = new PatientIndex(UHealthID o1, UHealthID 02)
+		index = new PatientIndex((UHealthID o1, UHealthID o2) -> o1.toString.compare(o2.toString()));
 	}
 	
 	public PatientIndex(Comparator<? super UHealthID> comparator){

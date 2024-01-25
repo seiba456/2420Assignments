@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.Random;
 
 /**
  * This class contains tests for Facility.
@@ -19,8 +20,8 @@ import java.util.GregorianCalendar;
  */
 public class FacilityTester {
 
-	private Facility emptyFacility, verySmallFacility, smallFacility;
-	private UHealthID uHID1, uHID2, uHID3;
+	private Facility emptyFacility, verySmallFacility, smallFacility, largeFacility;
+	private UHealthID uHID1, uHID2, uHID3, uHID4;
 	private GregorianCalendar date1, date2, date3;
 
 	@BeforeEach
@@ -43,7 +44,44 @@ public class FacilityTester {
 
 		smallFacility = new Facility();
 		smallFacility.addAll("src/assignment02/small_patient_list.txt");
-
+		
+		largeFacility = new Facility();
+		
+		for (int i = 0; i < 50; i++) {
+			Random r = new Random();
+			String first = "";
+			for (int j = 0; j < 4; j++) {
+				first = first + (char)r.nextInt(26);
+			}
+			
+			String last = "";
+			for (int j = 0; j < 4; j++) {
+				last = last + (char)r.nextInt(26);
+			}
+			
+			String uHID = "";
+			for (int j = 0; j < 4; j++) {
+				uHID = uHID + (char)r.nextInt(26);
+			}
+			uHID = uHID + "-";
+			for (int j = 0; j < 4; j++) {
+				uHID = uHID + r.nextInt(9);
+			}
+			
+			uHID4 = new UHealthID(uHID);
+			
+			int physician = r.nextInt(8999999) + 1000000;
+			
+			int year = r.nextInt(73) + 1950;
+			int month = r.nextInt(11) + 1;
+			int day = r.nextInt(27) + 1;
+			
+			GregorianCalendar date = new GregorianCalendar(year, month, day);
+			
+			CurrentPatient patient = new CurrentPatient(first, last, uHID4, physician, date);
+			largeFacility.addPatient(patient);
+		}
+		
 		// FILL IN -- Extend this tester to add more tests for the facilities above,
 		// as well as to create and test larger facilities.
 		// (HINT: For larger facility, generate random names, UHIDs, physicians, and
@@ -142,5 +180,13 @@ public class FacilityTester {
 	public void testSmallGetPhysicianList() {
 		ArrayList<Integer> actual = smallFacility.getPhysicianList();
 		assertEquals(7, actual.size());
+	}
+	
+	// Large facility tests
+	
+	@Test
+	public void testLargeLookupPhysicianCount() {
+		ArrayList<CurrentPatient> actualPatients = largeFacility.lookupByPhysician(0);
+		assertEquals(50, actualPatients.size());
 	}
 }
