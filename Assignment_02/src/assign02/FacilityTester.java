@@ -21,8 +21,9 @@ import java.util.Random;
 public class FacilityTester {
 
 	private Facility emptyFacility, verySmallFacility, smallFacility, largeFacility;
-	private UHealthID uHID1, uHID2, uHID3, uHID4;
-	private GregorianCalendar date1, date2, date3;
+	private UHealthID uHID1, uHID2, uHID3, uHID4, uHID5, uHID6;
+	private GregorianCalendar date1, date2, date3, oldDate, youngDate;
+	private CurrentPatient randomPatient, oldPatient, youngPatient;
 
 	@BeforeEach
 	void setUp() throws Exception {
@@ -30,10 +31,14 @@ public class FacilityTester {
 		uHID1 = new UHealthID("AAAA-1111");
 		uHID2 = new UHealthID("BCBC-2323");
 		uHID3 = new UHealthID("HRHR-7654");
+		uHID5 = new UHealthID("ABAB-1212");
+		uHID6 = new UHealthID("CDCD-3434");
 
 		date1 = new GregorianCalendar(2023, 0, 1);
 		date2 = new GregorianCalendar(2023, 3, 17);
 		date3 = new GregorianCalendar(2022, 8, 21);
+		oldDate = new GregorianCalendar(1949, 6, 6);
+		youngDate = new GregorianCalendar(2025, 6, 6);
 
 		emptyFacility = new Facility();
 
@@ -46,6 +51,9 @@ public class FacilityTester {
 		smallFacility.addAll("small_patient_list.txt");
 		
 		largeFacility = new Facility();
+		
+		youngPatient = new CurrentPatient("Young", "Patient", uHID5, 1020304, youngDate);
+		oldPatient = new CurrentPatient("Old", "Patient", uHID6, 2030406, oldDate);
 		
 		for (int i = 0; i < 50; i++) {
 			Random r = new Random();
@@ -80,6 +88,9 @@ public class FacilityTester {
 			
 			CurrentPatient patient = new CurrentPatient(first, last, uHID4, physician, date);
 			largeFacility.addPatient(patient);
+			if (i == 25) {
+				randomPatient = patient;
+			}
 		}
 		
 		// FILL IN -- Extend this tester to add more tests for the facilities above,
@@ -186,7 +197,37 @@ public class FacilityTester {
 	
 	@Test
 	public void testLargeLookupPhysicianCount() {
-		ArrayList<CurrentPatient> actualPatients = largeFacility.lookupByPhysician(0);
-		assertEquals(50, actualPatients.size());
+		ArrayList<CurrentPatient> actualPatients = largeFacility.lookupByPhysician(randomPatient.getPhysician());
+		assertEquals(1, actualPatients.size());
+	}
+
+	@Test
+	public void testLargeLookupPhysicianPatient() {
+		ArrayList<CurrentPatient> actualPatients = largeFacility.lookupByPhysician(randomPatient.getPhysician());
+		assertTrue(actualPatients.contains(randomPatient));
+	}
+	
+	@Test
+	public void testLargeGetInactivePatientsBefore2025() {
+		ArrayList<CurrentPatient> actual = largeFacility.getInactivePatients(new GregorianCalendar(2025, 0, 0));
+		assertEquals(50, actual.size());
+		largeFacility.addPatient(youngPatient);
+		ArrayList<CurrentPatient> actual2 = largeFacility.getInactivePatients(new GregorianCalendar(2025, 0, 0));
+		assertEquals(50, actual2.size());
+	}
+	
+	@Test
+	public void testLargeGetInactivePatientsBefore1950() {
+		ArrayList<CurrentPatient> actual = largeFacility.getInactivePatients(new GregorianCalendar(1950, 0, 0));
+		assertEquals(0, actual.size());
+		largeFacility.addPatient(oldPatient);
+		ArrayList<CurrentPatient> actual2 = largeFacility.getInactivePatients(new GregorianCalendar(1950, 0, 0));
+		assertEquals(1, actual2.size());
+	}
+	
+	@Test
+	public void testLargeGetPhysicianList() {
+		ArrayList<Integer> actual = largeFacility.getPhysicianList();
+		assertEquals(50, actual.size());
 	}
 }
